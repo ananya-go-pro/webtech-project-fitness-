@@ -13,8 +13,9 @@ router.post("/", async (req, res) => {
     console.log("hmmmm")
     const db = await run();
     const posts = db.collection("posts");
+    var likes=0
 
-    const result = await posts.insertOne({ username, title, body });
+    const result = await posts.insertOne({ username, title, body, likes });
     const post = await posts.findOne({ _id: result.insertedId },{ projection: { _id: 0 } });
     res.json({ post });
 
