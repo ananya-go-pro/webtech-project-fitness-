@@ -14,8 +14,9 @@ router.post("/", async (req, res) => {
     const db = await run();
     const posts = db.collection("posts");
     var likes=0
+    var likedBy = [] // Initialize empty likedBy array
 
-    const result = await posts.insertOne({ username, title, body, likes });
+    const result = await posts.insertOne({ username, title, body, likes, likedBy });
     const post = await posts.findOne({ _id: result.insertedId },{ projection: { _id: 0 } });
     res.json({ post });
 

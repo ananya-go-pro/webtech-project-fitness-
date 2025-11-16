@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ onLoginSuccess }) => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -14,8 +16,16 @@ const Login = () => {
       const res = await axios.post("http://localhost:3000/login", {
         username,
         password,
+      }, {
+        withCredentials: true
       });
       setMessage(res.data.message);
+      if (res.data.success) {
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
+        navigate("/blogpost");
+      }
     } catch (err) {
       if (err.response) {
         setMessage(err.response.data.message);
