@@ -3,7 +3,6 @@ const { run } = require("./database.js")
 
 const router = express.Router();
 
-// GET route to fetch all posts
 router.get("/", async (req, res) => {
   try {
     const db = await run();

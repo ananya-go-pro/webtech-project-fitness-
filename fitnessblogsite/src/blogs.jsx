@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function Blog() {
   const [posts, setPosts] = useState([]);
   const [message, setMessage] = useState("");
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
 
   // Configure axios to send credentials (cookies) for session
   axios.defaults.withCredentials = true;
@@ -38,39 +37,6 @@ function Blog() {
     }
   };
 
-  const submitPost = async (e) => {
-    e.preventDefault();
-    setMessage("");
-
-    if (!title.trim() || !body.trim()) {
-      setMessage("Title and body are required");
-      return;
-    }
-
-    try {
-      const res = await axios.post("http://localhost:3000/addpost", {
-        title,
-        body,
-      }, {
-        withCredentials: true
-      });
-
-      setMessage("Post added successfully!");
-      setTitle("");
-      setBody("");
-      fetchPosts(); // refresh the posts list
-    } catch (err) {
-      console.error("Error adding post:", err);
-      if (err.response) {
-        setMessage(err.response.data?.message || "Failed to add post");
-      } else if (err.request) {
-        setMessage("No response from server. Is the server running?");
-      } else {
-        setMessage("Server error");
-      }
-    }
-  };
-
   const handleLike = async (postId) => {
     try {
       const res = await axios.put(`http://localhost:3000/blogpost/like/${postId}`, {}, {
@@ -97,27 +63,11 @@ function Blog() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Create Blog Post</h2>
-      <form onSubmit={submitPost}>
-        <input
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-          style={{ display: "block", margin: "10px 0", width: "100%", maxWidth: "500px", padding: "8px" }}
-        />
-        <textarea
-          placeholder="Body"
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          required
-          style={{ display: "block", margin: "10px 0", width: "100%", maxWidth: "500px", padding: "8px", minHeight: "100px" }}
-        />
-        <button type="submit" style={{ padding: "8px 16px", marginBottom: "10px" }}>
-          Submit Post
-        </button>
-      </form>
+      <div style={{ marginBottom: "20px" }}>
+        <Link to="/addpost">
+          <button style={{ padding: "8px 16px" }}>Add Post</button>
+        </Link>
+      </div>
       {message && <p style={{ marginTop: 10, color: message.includes("error") || message.includes("Failed") || message.includes("Invalid") ? "red" : "green" }}>{message}</p>}
 
       <h2>Blog Posts</h2>

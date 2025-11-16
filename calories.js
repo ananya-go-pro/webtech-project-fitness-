@@ -27,6 +27,26 @@ function getFormattedDate() {
   return `${month} ${day}${getSuffix(day)} ${year}`;
 }
 
+router.get("/", async (req, res) => {
+  try {
+    if (!req.session || !req.session.username) {
+      return res.status(401).json({ message: "You must be logged in" });
+    }
+
+    const username = req.session.username;
+    const db = await run();
+    const calories = db.collection("calories");
+
+    const calorieEntries = await calories.find({ username }).toArray();
+
+    res.json({ calories: calorieEntries });
+
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     if (!req.session || !req.session.username) {
